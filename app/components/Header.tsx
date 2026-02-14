@@ -44,6 +44,14 @@ const TopBar = styled.div`
   align-items: center;
   padding: 0 1rem;
   flex-shrink: 0;
+  
+  @media (max-width: 640px) {
+    padding: 0 0.75rem;
+  }
+
+  @media (max-width: 390px) {
+    padding: 0 0.5rem;
+  }
 `;
 
 const Nav = styled.nav`
@@ -52,6 +60,10 @@ const Nav = styled.nav`
   gap: 1.5rem;
   height: 100%;
   justify-self: center;
+
+  @media (max-width: 390px) {
+    gap: 0.5rem;
+  }
 `;
 
 const NavItem = styled.div`
@@ -68,6 +80,9 @@ const NavItem = styled.div`
   &:hover {
     color: #000;
   }
+  
+  /* Prevent blue highlight on tap on mobile */
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const Logo = styled.div`
@@ -79,6 +94,15 @@ const Logo = styled.div`
   align-items: center;
   padding-left: 0.5rem;
   justify-self: start;
+
+  img {
+    height: 32px;
+    width: auto;
+    
+    @media (max-width: 390px) {
+      height: 24px;
+    }
+  }
 `;
 
 const RightSection = styled.div`
@@ -86,6 +110,11 @@ const RightSection = styled.div`
   gap: 1rem;
   padding-right: 2.5rem;
   justify-self: end;
+
+  @media (max-width: 390px) {
+    gap: 0.5rem;
+    padding-right: 1rem;
+  }
 `;
 
 const CTAButton = styled(Link)`
@@ -216,6 +245,17 @@ export default function Header() {
     }, 150); // 150ms delay
     setHoverTimeout(timeout);
   };
+  
+  // Toggle for touch devices
+  const handleTouch = (tab: string) => {
+    if (activeTab === tab) {
+      // If already active, maybe close it? Or do nothing?
+      // Let's close it to allow toggling off
+      setActiveTab(null);
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   // Header height logic: 52px (TopBar) + Measured Content Height
   // If no active tab, content height is effectively 0, but since we unmount children,
@@ -236,17 +276,26 @@ export default function Header() {
       }}
     >
       <TopBar>
-        <Logo>Gowoobro</Logo>
+        <Logo>
+          <img src="/app/image-removebg-preview.png" alt="Gowoobro Logo" />
+        </Logo>
         
         <Nav>
-          <NavItem onMouseEnter={() => handleMouseEnter('app')}>
+          <NavItem 
+            onMouseEnter={() => handleMouseEnter('app')}
+            onClick={() => handleTouch('app')}
+          >
             App
           </NavItem>
           
-          <NavItem onMouseEnter={() => handleMouseEnter('web')}>
+          <NavItem 
+            onMouseEnter={() => handleMouseEnter('web')}
+            onClick={() => handleTouch('web')}
+          >
             Web
           </NavItem>
         </Nav>
+
 
         <RightSection>
           <CTAButton href="#contact">Contact</CTAButton>
