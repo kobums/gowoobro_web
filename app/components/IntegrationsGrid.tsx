@@ -15,6 +15,18 @@ const Section = styled.section`
   perspective: 1000px;
   background: #f9f9fb;
   overflow: hidden; /* Prevent horizontal scroll from scattered items */
+
+  @media (max-width: 1200px) {
+    width: 90%;
+  }
+  
+  @media (max-width: 640px) {
+    padding: 3rem 1.5rem;
+  }
+
+  @media (max-width: 390px) {
+    padding: 2rem 1rem;
+  }
 `;
 
 const Container = styled.div`
@@ -36,6 +48,11 @@ const Title = styled(motion.h2)`
   
   @media (max-width: 768px) {
     font-size: 2.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
   }
 `;
 
@@ -46,6 +63,15 @@ const Grid = styled.div`
   width: 100%;
   max-width: 1000px;
   transform-style: preserve-3d;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1rem;
+  }
+
+  @media (max-width: 390px) {
+    gap: 0.5rem;
+  }
 `;
 
 const ProjectItem = styled(motion.div)`
@@ -56,7 +82,7 @@ const ProjectItem = styled(motion.div)`
   justify-content: center;
   aspect-ratio: 1;
   background: transparent;
-  border-radius: 50px;
+  border-radius: 50px; /* Changed from 50px to prevent circle look on mobile */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   border: none;
   padding: 0;
@@ -74,6 +100,10 @@ const ProjectItem = styled(motion.div)`
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+  
+  @media (max-width: 768px) {
+    border-radius: 24px;
   }
 `;
 

@@ -26,6 +26,19 @@ const ChatContainer = styled.div`
   padding: 4rem 1rem;
   width: 100%;
   position: relative;
+  overflow-x: hidden;
+
+  @media (max-width: 1200px) {
+    width: 90%;
+  }
+  
+  @media (max-width: 640px) {
+    padding: 2rem 1rem;
+  }
+
+  @media (max-width: 390px) {
+    padding: 1rem 0.5rem;
+  }
 `;
 
 const HeaderSection = styled.div`
@@ -56,7 +69,41 @@ const Title = styled.h2`
   letter-spacing: -0.03em;
   
   @media (max-width: 640px) {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  @media (max-width: 390px) {
+    font-size: 1.5rem;
+  }
+`;
+
+// ... (BoxWrapper, GlowBackground, InputSection, rotate animations, AgentIcon omitted as they don't need changes yet) ...
+
+const TextArea = styled.textarea`
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #1f2937;
+  border: none;
+  background: transparent;
+  outline: none;
+  resize: none;
+  min-height: 60px;
+  height: auto;
+  font-family: inherit;
+  padding: 0.5rem 0;
+
+  @media (max-width: 640px) {
+    font-size: 1rem;
+    min-height: 48px;
+    padding: 0.25rem 0;
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
   }
 `;
 
@@ -70,6 +117,16 @@ const BoxWrapper = styled.div`
   padding: 1.5rem;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 1200px) {
+    width: 90%;
+    box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  @media (max-width: 640px) {
+    padding: 1rem;
+    border-radius: 20px;
+  }
 `;
 
 const GlowBackground = styled.div`
@@ -156,26 +213,7 @@ const AgentIcon = styled.div`
   }
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  font-size: 1.5rem;
-  line-height: 1.4;
-  font-weight: 500;
-  color: #1f2937;
-  border: none;
-  background: transparent;
-  outline: none;
-  resize: none;
-  min-height: 60px;
-  height: auto;
-  font-family: inherit;
-  padding: 0.5rem 0;
 
-  &::placeholder {
-    color: #9ca3af;
-    font-weight: 400;
-  }
-`;
 
 const SubmitButton = styled.button`
   width: 40px;
@@ -190,6 +228,17 @@ const SubmitButton = styled.button`
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
+
+  @media (max-width: 640px) {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
   
   &:hover:not(:disabled) {
     background-color: #6d28d9;
@@ -210,6 +259,12 @@ const SuggestionRow = styled.div`
   flex-wrap: wrap;
   position: relative;
   z-index: 10;
+
+  @media (max-width: 640px) {
+    margin-top: 1rem;
+    gap: 0.5rem;
+    justify-content: center; /* Center chips on small screens */
+  }
 `;
 
 const SuggestionChip = styled(motion.button)`
@@ -230,6 +285,12 @@ const SuggestionChip = styled(motion.button)`
     border-color: #ddd6fe;
     background-color: #f5f3ff;
     color: #6d28d9;
+  }
+
+  @media (max-width: 640px) {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
   }
 
   svg {
@@ -303,7 +364,7 @@ export default function ChatInterface() {
       </HeaderSection>
 
       <BoxWrapper>
-        <GlowBackground />
+        {/* <GlowBackground /> */}
         
         <InputSection>
           {/* <AgentIcon>

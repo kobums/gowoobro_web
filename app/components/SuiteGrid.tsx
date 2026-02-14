@@ -21,6 +21,10 @@ const Section = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
+  @media (max-width: 640px) {
+    padding: 2rem 1rem;
+  }
 `;
 
 const Container = styled.div`
@@ -28,6 +32,8 @@ const Container = styled.div`
   width: 100%;
   margin: 0 auto;
 `;
+
+
 
 const TitleWrapper = styled.div`
   margin-bottom: 3rem;
@@ -145,6 +151,16 @@ const Card = styled.div<{ themeColors: SuiteTheme }>`
   border-radius: 1.5rem;
   padding: 2rem;
   padding-bottom: 4rem; /* Space for the tongue */
+  
+  @media (max-width: 640px) {
+    padding: 1.5rem;
+    padding-bottom: 3.5rem;
+  }
+
+  @media (max-width: 390px) {
+    padding: 1rem;
+    padding-bottom: 3rem;
+  }
   overflow: hidden;
   position: relative;
   z-index: 2;
@@ -160,6 +176,10 @@ const Card = styled.div<{ themeColors: SuiteTheme }>`
     margin: 0 0 1rem 0;
     color: #001f1f;
     font-weight: 500;
+
+    @media (max-width: 390px) {
+      font-size: 1.5rem;
+    }
   }
 
   p {

@@ -13,6 +13,8 @@ const Main = styled.main`
   background-color: #f9f9fb;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
 `;
 
 const HeroSection = styled.div`
