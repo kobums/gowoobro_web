@@ -1,0 +1,64 @@
+{
+  "header": {
+    "nav": {
+      "app": "App",
+      "web": "Web"
+    },
+    "contact": "Contact",
+    "dropdown": {
+      "app_desc": "Mobile Apps",
+      "web_desc": "Web Platforms"
+    }
+  },
+  "hero": {
+    "title": "What would you like to know?",
+    "tag": "Answer Anything",
+    "placeholder": "How can I help you today?",
+    "suggestions": {
+      "policies": "Leave policies",
+      "growth": "Career growth",
+      "coaching": "Manager coaching"
+    }
+  },
+  "integrations": {
+    "title": "Built with passion,\\npowered by modern tech"
+  },
+  "suite": {
+    "title": "Crafting digital experiences.",
+    "description": "From native mobile applications to responsive web platforms,\\nI build solutions that solve real problems and delight users.",
+    "app_card": {
+      "title": "APP",
+      "description": "Cross-platform mobile applications built with Flutter, delivering native performance on both iOS and Android.",
+      "items": ["Flutter", "Dart", "Cross-platform", "iOS & Android", "Material Design"]
+    },
+    "web_card": {
+      "title": "WEB",
+      "description": "Modern web applications leveraging the power of Next.js, React, and interactive 3D elements.",
+      "items": ["gym management", "ninedragons", "tomelater", "apple music playlist"]
+    },
+    "take_tour": "Take a tour"
+  },
+  "footer": {
+    "projects": "Projects",
+    "mobile_apps": "Mobile Apps",
+    "web_platforms": "Web Platforms",
+    "flutter_apps": "Flutter Apps",
+    "app_store": "App Store",
+    "play_store": "Play Store",
+    "nextjs_projects": "Next.js Projects",
+    "react_apps": "React Applications",
+    "profile": "Profile",
+    "about": "About",
+    "experience": "Experience",
+    "skills": "Skills",
+    "contact": "Contact",
+    "email": "Email",
+    "kakao": "KakaoTalk",
+    "major_works": "Major Works",
+    "download": "Download",
+    "resume": "Resume",
+    "portfolio": "Portfolio (PDF)",
+    "language": "English",
+    "copyright": "© {year} Gowoobro. All rights reserved."
+  }
+}

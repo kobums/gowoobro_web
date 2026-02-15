@@ -1,0 +1,64 @@
+{
+  "header": {
+    "nav": {
+      "app": "앱",
+      "web": "웹"
+    },
+    "contact": "문의하기",
+    "dropdown": {
+      "app_desc": "모바일 앱",
+      "web_desc": "웹 플랫폼"
+    }
+  },
+  "hero": {
+    "title": "무엇을 도와드릴까요?",
+    "tag": "무엇이든 물어보세요",
+    "placeholder": "오늘 어떤 도움이 필요하신가요?",
+    "suggestions": {
+      "policies": "휴가 규정",
+      "growth": "커리어 성장",
+      "coaching": "매니저 코칭"
+    }
+  },
+  "integrations": {
+    "title": "열정으로 만들고,\\n현대 기술로 구동합니다"
+  },
+  "suite": {
+    "title": "디지털 경험을 만듭니다.",
+    "description": "네이티브 모바일 애플리케이션부터 반응형 웹 플랫폼까지,\\n실제 문제를 해결하고 사용자에게 즐거움을 주는 솔루션을 구축합니다.",
+    "app_card": {
+      "title": "APP",
+      "description": "Flutter로 구축된 크로스 플랫폼 모바일 애플리케이션으로 iOS와 Android 모두에서 네이티브 성능을 제공합니다.",
+      "items": ["Flutter", "Dart", "크로스 플랫폼", "iOS & Android", "Material Design"]
+    },
+    "web_card": {
+      "title": "WEB",
+      "description": "Next.js, React 및 인터랙티브 3D 요소를 활용한 모던 웹 애플리케이션입니다.",
+      "items": ["gym management", "ninedragons", "tomelater", "apple music playlist"]
+    },
+    "take_tour": "둘러보기"
+  },
+  "footer": {
+    "projects": "프로젝트",
+    "mobile_apps": "모바일 앱",
+    "web_platforms": "웹 플랫폼",
+    "flutter_apps": "Flutter 앱",
+    "app_store": "App Store",
+    "play_store": "Play Store",
+    "nextjs_projects": "Next.js 프로젝트",
+    "react_apps": "React 애플리케이션",
+    "profile": "프로필",
+    "about": "소개 (About)",
+    "experience": "경력 (Experience)",
+    "skills": "기술 스택 (Skills)",
+    "contact": "연락하기",
+    "email": "이메일 문의",
+    "kakao": "카카오톡 오픈채팅",
+    "major_works": "주요 작업물",
+    "download": "다운로드",
+    "resume": "이력서 (Resume)",
+    "portfolio": "포트폴리오 (PDF)",
+    "language": "한국어",
+    "copyright": "© {year} Gowoobro. All rights reserved."
+  }
+}
