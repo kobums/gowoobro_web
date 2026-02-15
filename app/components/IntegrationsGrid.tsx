@@ -1,7 +1,13 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { Fragment } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+import tomelaterImg from '@/public/icons/tomelater.png';
+import ninedragonsImg from '@/public/icons/ninedragons.png';
+import gymImg from '@/public/icons/gym_management.png';
+import musicImg from '@/public/icons/apple_music_playlist.png';
 
 // --- Styled Components ---
 
@@ -109,13 +115,27 @@ const ProjectItem = styled(motion.div)`
 
 // --- Data ---
 const projects = [
-  { name: 'Tomelater', icon: '/icons/tomelater.png' },
-  { name: 'Nine Dragons', icon: '/icons/ninedragons.png' },
-  { name: 'Gym Mgmt', icon: '/icons/gym_management.png' },
-  { name: 'Music Playlist', icon: '/icons/apple_music_playlist.png' },
+  { name: 'Tomelater', icon: tomelaterImg },
+  { name: 'Nine Dragons', icon: ninedragonsImg },
+  { name: 'Gym Mgmt', icon: gymImg },
+  { name: 'Music Playlist', icon: musicImg },
 ];
 
-export default function IntegrationsGrid() {
+export default function IntegrationsGrid({ dict }: { dict?: any }) {
+  const t = dict || {
+    title: "Built with passion,\npowered by modern tech"
+  };
+  
+  // Helper to render newlines
+  const renderTitle = (text: string) => {
+    return text.split('\\n').map((line, i) => (
+      <Fragment key={i}>
+        {line}
+        {i < text.split('\\n').length - 1 && <br />}
+      </Fragment>
+    ));
+  };
+
   return (
     <Section>
       <Container>
@@ -125,7 +145,7 @@ export default function IntegrationsGrid() {
           viewport={{ margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          Built with passion,<br />powered by modern tech
+          {renderTitle(t.title)}
         </Title>
         
         <Grid>
@@ -164,7 +184,8 @@ export default function IntegrationsGrid() {
                 }}
                 style={{ transformPerspective: 1000 }} 
               >
-                  <img src={project.icon} alt={`${project.name} icon`} loading="lazy" />
+                {/* <img src={project.icon} alt={`${project.name} icon`} loading="lazy" /> */}
+                <Image src={project.icon} alt={`${project.name} icon`} loading="lazy" />
               </ProjectItem>
             );
           })}

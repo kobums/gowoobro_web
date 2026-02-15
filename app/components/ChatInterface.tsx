@@ -315,9 +315,21 @@ const ResponseArea = styled(motion.div)`
 
 // --- Component ---
 
-export default function ChatInterface() {
+export default function ChatInterface({ dict }: { dict?: any }) {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState<string | null>(null);
+
+  // Fallback dict
+  const t = dict || {
+    tag: 'Answer Anything', 
+    title: 'What would you like to know?',
+    placeholder: 'How can I help you today?',
+    suggestions: {
+      policies: 'Leave policies',
+      growth: 'Career growth',
+      coaching: 'Manager coaching'
+    }
+  };
 
   const sendMessageMutation = useMutation({
     mutationFn: async (text: string) => {
@@ -351,16 +363,16 @@ export default function ChatInterface() {
   };
 
   const suggestions = [
-    { icon: '📝', text: 'Leave policies' },
-    { icon: '🚀', text: 'Career growth' },
-    { icon: '👥', text: 'Manager coaching' },
+    { icon: '📝', text: t.suggestions.policies },
+    { icon: '🚀', text: t.suggestions.growth },
+    { icon: '👥', text: t.suggestions.coaching },
   ];
 
   return (
     <ChatContainer>
       <HeaderSection>
-        <Tag>✨ Ask me anything</Tag>
-        <Title>What would you like to know?</Title>
+        <Tag>✨ {t.tag}</Tag>
+        <Title>{t.title}</Title>
       </HeaderSection>
 
       <BoxWrapper>
@@ -379,7 +391,7 @@ export default function ChatInterface() {
           
           <div style={{ flex: 1 }}>
             <TextArea
-              placeholder="How can I help you today?"
+              placeholder={t.placeholder}
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);

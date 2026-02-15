@@ -5,6 +5,8 @@ import { useState, useRef, useEffect } from 'react';
 import { projects } from '../data';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+import logoImg from '@/public/app/image-removebg-preview.png';
 
 // Styles adapted from Craft.do
 const HeaderContainer = styled(motion.header)`
@@ -222,7 +224,7 @@ function useElementSize() {
   return [ref, size] as const;
 }
 
-export default function Header() {
+export default function Header({ dict }: { dict?: any }) { // Optional during migration, strictly typed later
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [contentRef, contentSize] = useElementSize();
@@ -262,6 +264,12 @@ export default function Header() {
   // we rely on the measured size of the wrapper or force animating to 52.
   const targetHeight = activeTab ? 52 + contentSize.height : 52;
 
+  // Fallback for dict if not provided (during transition)
+  const t = dict || {
+    nav: { app: 'App', web: 'Web' },
+    contact: 'Contact'
+  };
+
   return (
     <HeaderContainer
       initial={false}
@@ -277,7 +285,12 @@ export default function Header() {
     >
       <TopBar>
         <Logo>
-          <img src="/app/image-removebg-preview.png" alt="Gowoobro Logo" />
+          <Image 
+            src={logoImg} 
+            alt="Gowoobro Logo" 
+            style={{ height: '32px', width: 'auto' }}
+            priority
+          />
         </Logo>
         
         <Nav>
@@ -285,20 +298,20 @@ export default function Header() {
             onMouseEnter={() => handleMouseEnter('app')}
             onClick={() => handleTouch('app')}
           >
-            App
+            {t.nav.app}
           </NavItem>
           
           <NavItem 
             onMouseEnter={() => handleMouseEnter('web')}
             onClick={() => handleTouch('web')}
           >
-            Web
+            {t.nav.web}
           </NavItem>
         </Nav>
 
 
         <RightSection>
-          <CTAButton href="#contact">Contact</CTAButton>
+          <CTAButton href="#contact">{t.contact}</CTAButton>
         </RightSection>
       </TopBar>
 

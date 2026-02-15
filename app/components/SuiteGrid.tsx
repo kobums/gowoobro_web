@@ -1,16 +1,8 @@
+'use client';
 
-import React from 'react';
+import { Fragment } from 'react';
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
 import { motion } from 'framer-motion';
-
-// --- Global Keyframes & Variables ---
-
-const suiteItemsAnimation = keyframes`
-  from { transform: translateY(0%); }
-  to   { transform: translateY(-50%); } 
-`;
-// Note: Changed to -50% because we will duplicate the items for seamless loop
 
 // --- Styled Components ---
 
@@ -32,8 +24,6 @@ const Container = styled.div`
   width: 100%;
   margin: 0 auto;
 `;
-
-
 
 const TitleWrapper = styled.div`
   margin-bottom: 3rem;
@@ -80,36 +70,36 @@ const Grid = styled.div`
 
 // Theme Props Interface
 interface SuiteTheme {
-  plusBg: string; // Background for the Plus icon
-  plusIcon: string; // Color of the Plus icon
-  tongueBg: string; // Background of the "Take a tour" tab
-  tongueTxt: string; // Text color of the tab
-  tongueShadow: string; // Shadow color
-  txtItem: string; // List item text color
-  txtPara: string; // Paragraph text color
-  cardBg: string; // Card background color
+  plusBg: string; 
+  plusIcon: string; 
+  tongueBg: string; 
+  tongueTxt: string; 
+  tongueShadow: string; 
+  txtItem: string; 
+  txtPara: string; 
+  cardBg: string; 
 }
 
 // Define Themes
 const themes: Record<string, SuiteTheme> = {
   app: {
-    plusBg: '#e063c7', // pink-400
-    plusIcon: '#fde5ff', // pink-100
-    tongueBg: '#fab8ff', // pink-200
-    tongueTxt: '#b8337a', // pink-800
-    tongueShadow: '#e063c7', // pink-400
-    txtItem: '#b8337a', // pink-800
-    txtPara: '#d64da9', // pink-600
+    plusBg: '#e063c7', 
+    plusIcon: '#fde5ff', 
+    tongueBg: '#fab8ff', 
+    tongueTxt: '#b8337a', 
+    tongueShadow: '#e063c7', 
+    txtItem: '#b8337a', 
+    txtPara: '#d64da9', 
     cardBg: '#ffffff',
   },
   web: {
-    plusBg: '#7070ff', // purple-400
-    plusIcon: '#e1e1fa', // purple-100
-    tongueBg: '#b8b8ff', // purple-200
-    tongueTxt: '#4533b8', // purple-800
-    tongueShadow: '#7070ff', // purple-400
-    txtItem: '#4533b8', // purple-800
-    txtPara: '#624ee5', // purple-600
+    plusBg: '#7070ff', 
+    plusIcon: '#e1e1fa', 
+    tongueBg: '#b8b8ff', 
+    tongueTxt: '#4533b8', 
+    tongueShadow: '#7070ff', 
+    txtItem: '#4533b8', 
+    txtPara: '#624ee5', 
     cardBg: '#ffffff',
   }
 };
@@ -123,15 +113,12 @@ const CardWrapper = styled.a<{ themeColors: SuiteTheme }>`
   transition: transform 0.3s ease;
   cursor: pointer;
 
-  /* Focus & Hover states affecting children */
   &:hover, &:focus {
     .suite-card {
       box-shadow: 0px 0.4rem 0.8rem 0rem color-mix(in srgb, ${p => p.themeColors.tongueShadow}, transparent 52%);
     }
     
     .suite-card-icon {
-      /* Rotate plus to X or similar effect if desired, but Lattice design rotates to 0? 
-         Let's stick to the icon morph/swap logic mostly */
       transform: rotate(90deg); 
     }
 
@@ -150,7 +137,7 @@ const Card = styled.div<{ themeColors: SuiteTheme }>`
   background-color: ${p => p.themeColors.cardBg};
   border-radius: 1.5rem;
   padding: 2rem;
-  padding-bottom: 4rem; /* Space for the tongue */
+  padding-bottom: 4rem; 
   
   @media (max-width: 640px) {
     padding: 1.5rem;
@@ -176,7 +163,7 @@ const Card = styled.div<{ themeColors: SuiteTheme }>`
     margin: 0 0 1rem 0;
     color: #001f1f;
     font-weight: 500;
-
+    
     @media (max-width: 390px) {
       font-size: 1.5rem;
     }
@@ -203,7 +190,7 @@ const IconWrapper = styled.div<{ themeColors: SuiteTheme }>`
   height: 3rem;
   border-radius: 50%;
   background-color: ${p => p.themeColors.plusBg};
-  color: ${p => p.themeColors.plusIcon}; /* Icon fill color */
+  color: ${p => p.themeColors.plusIcon}; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,22 +204,16 @@ const IconWrapper = styled.div<{ themeColors: SuiteTheme }>`
 `;
 
 const AnimatedListWrapper = styled.div`
-  height: 200px; /* Visible height */
+  height: 200px;
   overflow: hidden;
   margin-bottom: 2rem;
   position: relative;
-  
   /* Mask to fade out top and bottom */
   mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
 `;
 
-const AnimatedList = styled.div`
-  animation: ${suiteItemsAnimation} 20s linear infinite;
-  
-  /* Pause on hover if desired */
-  /* .suite-card:hover & {
-    animation-play-state: paused; 
-  } */
+const AnimatedList = styled(motion.div)`
+  /* Using framer-motion for animation */
 `;
 
 const ListItem = styled.div<{ themeColors: SuiteTheme }>`
@@ -271,7 +252,7 @@ const Tongue = styled.div<{ themeColors: SuiteTheme }>`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 3.5rem; /* Visible height */
+  height: 3.5rem; 
   background-color: ${p => p.themeColors.tongueBg};
   color: ${p => p.themeColors.tongueTxt};
   display: flex;
@@ -280,25 +261,13 @@ const Tongue = styled.div<{ themeColors: SuiteTheme }>`
   border-bottom-left-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
   font-weight: 500;
-  z-index: 1; /* Behind card content mostly, but here it acts as a footer */
-  transform: translateY(-100%); /* Hidden by default (behind card?) - Wait, Lattice design has it slide DOWN or UP? */
-  /* Actually Lattice design: 
-     .suite-card-tongue { transform: translateY(0%); } // visible state?
-     Wait, the CSS said: 
-     .suite-card-wrapper:hover .suite-card-tongue { transform: translateY(0%); }
-     So default must be hidden. Let's adjust logic.
-  */
-  transform: translateY(-80%); /* Partially hidden behind card body? No, it's typically "tucked" behind. 
-  Let's actually move it *outside* the card flow visually or make the card content sit on top. */
+  z-index: 1; 
+  transform: translateY(-80%); 
   
-  /* Correction: In the provided HTML, .suite-card-tongue is a sibling of .suite-card wrapper? No, it's inside wrapper, sibling of .suite-card. */
-  /* Let's follow that structure. */
-  
-  margin-top: -1.5rem; /* Pull up */
-  padding-top: 1.5rem; /* Push text down */
+  margin-top: -1.5rem; 
+  padding-top: 1.5rem; 
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   
-  /* Arrow after text */
   &::after {
     content: "→";
     display: inline-block;
@@ -324,24 +293,23 @@ const PlusIcon = () => (
 );
 
 
-// --- Components ---
-
 const SuiteCard = ({ 
   title, 
   description, 
   items, 
   themeKey, 
-  href 
+  href,
+  takeTourText 
 }: { 
   title: string, 
   description: string, 
   items: string[], 
   themeKey: 'app' | 'web',
-  href: string 
+  href: string,
+  takeTourText: string
 }) => {
   const theme = themes[themeKey];
   
-  // Duplicating items for seamless loop
   const loopItems = [...items, ...items];
 
   return (
@@ -355,7 +323,15 @@ const SuiteCard = ({
         </CardHeader>
         
         <AnimatedListWrapper>
-          <AnimatedList className="suite-list">
+          <AnimatedList 
+            className="suite-list"
+            animate={{ y: "-50%" }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 20, 
+              ease: "linear" 
+            }}
+          >
             {loopItems.map((item, i) => (
               <ListItem key={i} themeColors={theme}>
                 <Dot themeColors={theme}><CheckIcon /></Dot>
@@ -369,42 +345,65 @@ const SuiteCard = ({
       </Card>
       
       <Tongue themeColors={theme} className="suite-card-tongue">
-        Take a tour
+        {takeTourText}
       </Tongue>
     </CardWrapper>
   );
 };
 
-export default function SuiteGrid() {
+export default function SuiteGrid({ dict }: { dict?: any }) {
+  const t = dict || {
+    title: "Crafting digital experiences.",
+    description: "From native mobile applications to responsive web platforms,\\nI build solutions that solve real problems and delight users.",
+    app_card: {
+      title: "APP",
+      description: "Cross-platform mobile applications built with Flutter, delivering native performance on both iOS and Android.",
+      items: ["Flutter", "Dart", "Cross-platform", "iOS & Android", "Material Design"]
+    },
+    web_card: {
+      title: "WEB",
+      description: "Modern web applications leveraging the power of Next.js, React, and interactive 3D elements.",
+      items: ["gym management", "ninedragons", "tomelater", "apple music playlist"]
+    },
+    take_tour: "Take a tour"
+  };
+
+  const renderText = (text: string) => {
+    return text.split('\\n').map((line, i) => (
+      <Fragment key={i}>
+        {line}
+        {i < text.split('\\n').length - 1 && <br />}
+      </Fragment>
+    ));
+  };
+
+
   return (
     <Section>
       <Container>
         <TitleWrapper>
-          <h2>Crafting digital experiences.</h2>
+          <h2>{t.title}</h2>
           <p>
-            From native mobile applications to responsive web platforms,
-            I build solutions that solve real problems and delight users.
+            {renderText(t.description)}
           </p>
         </TitleWrapper>
         
         <Grid>
           <SuiteCard 
-            title="APP" 
+            title={t.app_card.title}
             themeKey="app"
             href="/apps"
-            description="Cross-platform mobile applications built with Flutter, delivering native performance on both iOS and Android."
-            items={[
-              "Flutter", "Dart", "Cross-platform", "iOS & Android", "Material Design", "tomelater"
-            ]}
+            description={t.app_card.description}
+            items={t.app_card.items}
+            takeTourText={t.take_tour}
           />
           <SuiteCard 
-            title="WEB" 
+            title={t.web_card.title} 
             themeKey="web"
             href="/web"
-            description="Modern web applications leveraging the power of Next.js, React, and interactive 3D elements."
-            items={[
-              "gym management", "ninedragons", "tomelater", "apple music playlist"
-            ]}
+            description={t.web_card.description}
+            items={t.web_card.items}
+            takeTourText={t.take_tour}
           />
         </Grid>
       </Container>
