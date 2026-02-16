@@ -17,7 +17,9 @@
     "suggestions": {
       "policies": "Leave policies",
       "growth": "Career growth",
-      "coaching": "Manager coaching"
+      "coaching": "Manager coaching",
+      "success_message": "Question registered!\nWe will answer after confirmation.",
+      "error_message": "Transmission failed.\nPlease try again."
     }
   },
   "integrations": {

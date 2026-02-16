@@ -11,13 +11,15 @@
     }
   },
   "hero": {
-    "title": "무엇을 도와드릴까요?",
+    "title": "무엇이 알고 싶으신가요?",
     "tag": "무엇이든 물어보세요",
     "placeholder": "오늘 어떤 도움이 필요하신가요?",
     "suggestions": {
       "policies": "휴가 규정",
       "growth": "커리어 성장",
-      "coaching": "매니저 코칭"
+      "coaching": "매니저 코칭",
+      "success_message": "질문이 등록되었습니다!\n확인 후 답변 드리겠습니다.",
+      "error_message": "전송에 실패했습니다.\n다시 시도해주세요."
     }
   },
   "integrations": {

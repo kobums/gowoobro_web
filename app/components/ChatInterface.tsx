@@ -2,9 +2,11 @@
 
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { useState } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createQuestion } from '../api/questions';
+import { createIpblock } from '../api/ipblock';
 
 // --- Animations ---
 const glowAnimation = keyframes`
@@ -304,20 +306,53 @@ const SuggestionChip = styled(motion.button)`
   }
 `;
 
-const ResponseArea = styled(motion.div)`
+
+
+// --- Component ---
+
+// --- New Status Components ---
+
+const StatusMessage = styled(motion.div)<{ type: 'success' | 'error' }>`
   margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #f3f4f6;
-  font-size: 1.1rem;
-  color: #4b5563;
-  line-height: 1.6;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  font-size: 1rem;
+  width: 90%;
+  
+  ${props => props.type === 'success' ? `
+    background-color: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+  ` : `
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  `}
+
+  @media (max-width: 640px) {
+    width: 80%;
+  }
+`;
+
+const MobileBr = styled.br`
+  display: none;
+  @media (max-width: 640px) {
+    display: block;
+    content: ""; /* helper for some browsers */
+    margin: 0;
+  }
 `;
 
 // --- Component ---
 
 export default function ChatInterface({ dict }: { dict?: any }) {
   const [message, setMessage] = useState('');
-  const [response, setResponse] = useState<string | null>(null);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [ip, setIp] = useState<string>('');
 
   // Fallback dict
   const t = dict || {
@@ -327,24 +362,52 @@ export default function ChatInterface({ dict }: { dict?: any }) {
     suggestions: {
       policies: 'Leave policies',
       growth: 'Career growth',
-      coaching: 'Manager coaching'
+      coaching: 'Manager coaching',
+      success_message: 'Question registered!\nWe will answer after confirmation.',
+      error_message: 'Transmission failed.\nPlease try again.'
     }
   };
 
+  // Safe access to messages
+  const successMsg = t.suggestions?.success_message || 'Success';
+  const errorMsg = t.suggestions?.error_message || 'Error';
+
+  useEffect(() => {
+    const fetchIpAndBlock = async () => {
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        const clientIp = ipData.ip;
+        setIp(clientIp);
+
+        if (clientIp) {
+          await createIpblock({ address: clientIp });
+        }
+      } catch (error) {
+        console.error('Failed to fetch IP or send block request:', error);
+      }
+    };
+
+    fetchIpAndBlock();
+  }, []);
+
   const sendMessageMutation = useMutation({
     mutationFn: async (text: string) => {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text }),
+      return await createQuestion({
+        question: text,
+        address: ip || 'unknown',
       });
-      if (!res.ok) throw new Error('Failed to send message');
-      return res.json();
     },
     onSuccess: () => {
-      // Mock response for now to demonstrate the UI
-      setResponse(`Here's a mock response for: "${message}"`);
+      setStatus('success');
       setMessage('');
+      // Clear success message after 3 seconds
+      setTimeout(() => setStatus('idle'), 3000);
+    },
+    onError: () => {
+      setStatus('error');
+      // Clear error message after 3 seconds
+      setTimeout(() => setStatus('idle'), 3000);
     },
   });
 
@@ -359,7 +422,6 @@ export default function ChatInterface({ dict }: { dict?: any }) {
 
   const handleSuggestionClick = (text: string) => {
     setMessage(text);
-    // Optional: Auto send or just fill? Let's just fill for better ux
   };
 
   const suggestions = [
@@ -395,8 +457,7 @@ export default function ChatInterface({ dict }: { dict?: any }) {
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
-                // Reset response when user types new message?
-                if (response && e.target.value) setResponse(null); 
+                if (status !== 'idle') setStatus('idle'); 
               }}
               onKeyDown={handleKeyDown}
             />
@@ -422,18 +483,52 @@ export default function ChatInterface({ dict }: { dict?: any }) {
         </InputSection>
 
         <AnimatePresence>
-          {response && (
-             <ResponseArea
-               initial={{ opacity: 0, height: 0 }}
-               animate={{ opacity: 1, height: 'auto' }}
-               exit={{ opacity: 0, height: 0 }}
-             >
-               {response}
-             </ResponseArea>
+          {status === 'success' && (
+            <StatusMessage
+              type="success"
+              initial={{ opacity: 0, y: 10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <div>
+                {successMsg.split('\n').map((line: string, i: number, arr: string[]) => (
+                  <Fragment key={i}>
+                    {line}
+                    {i < arr.length - 1 && <MobileBr />}
+                  </Fragment>
+                ))}
+              </div>
+            </StatusMessage>
+          )}
+
+          {status === 'error' && (
+            <StatusMessage
+              type="error"
+              initial={{ opacity: 0, y: 10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <div>
+                {errorMsg.split('\n').map((line: string, i: number, arr: string[]) => (
+                  <Fragment key={i}>
+                    {line}
+                    {i < arr.length - 1 && <MobileBr />}
+                  </Fragment>
+                ))}
+              </div>
+            </StatusMessage>
           )}
         </AnimatePresence>
 
-        <SuggestionRow>
+        {/* <SuggestionRow>
           {suggestions.map((s) => (
             <SuggestionChip 
               key={s.text}
@@ -445,7 +540,7 @@ export default function ChatInterface({ dict }: { dict?: any }) {
               {s.text}
             </SuggestionChip>
           ))}
-        </SuggestionRow>
+        </SuggestionRow> */}
 
       </BoxWrapper>
       
