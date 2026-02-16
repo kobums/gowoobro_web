@@ -1,3 +1,9 @@
+import { StaticImageData } from 'next/image';
+import tomelaterImg from '@/public/icons/tomelater.png';
+import ninedragonsImg from '@/public/icons/ninedragons.png';
+import gymImg from '@/public/icons/gym_management.png';
+import musicImg from '@/public/icons/apple_music_playlist.png';
+
 export type ProjectType = 'app' | 'web';
 
 export interface Project {
@@ -5,7 +11,7 @@ export interface Project {
   type: ProjectType;
   title: string;
   description: string;
-  icon: string; // Path to icon in public folder
+  icon: StaticImageData | string; // Path to icon in public folder
   url?: string;
   storeLinks?: {
     playStore?: string;
@@ -20,7 +26,7 @@ export const projects: Project[] = [
     type: 'web',
     title: 'Tomelater',
     description: 'Read it later, maybe.',
-    icon: '/icons/tomelater.png',
+    icon: tomelaterImg,
     url: 'https://tomelater.gowoobro.com',
   },
   {
@@ -28,7 +34,7 @@ export const projects: Project[] = [
     type: 'web',
     title: 'Nine Dragons / Number Change',
     description: 'Predict the future with numbers.',
-    icon: '/icons/ninedragons.png',
+    icon: ninedragonsImg,
     url: 'https://ninedragons.gowoobro.com',
   },
   {
@@ -36,7 +42,7 @@ export const projects: Project[] = [
     type: 'web',
     title: 'Gym Management',
     description: 'Platform for managing your gym business.',
-    icon: '/icons/gym_management.png',
+    icon: gymImg,
     url: 'https://gym.gowoobro.com',
   },
   {
@@ -44,7 +50,7 @@ export const projects: Project[] = [
     type: 'web',
     title: 'Apple Playlist',
     description: 'Share your Apple Music playlists.',
-    icon: '/icons/apple_music_playlist.png',
+    icon: musicImg,
     url: 'https://playlist.gowoobro.com',
   },
   {
@@ -52,7 +58,7 @@ export const projects: Project[] = [
     type: 'app',
     title: 'Tomelater App',
     description: 'Mobile version of Tomelater.',
-    icon: '/icons/tomelater.png',
+    icon: tomelaterImg,
     storeLinks: {
       appStore: 'https://apps.apple.com/us/app/tomelater',
       playStore: 'https://play.google.com/store/apps/details?id=com.tomelater',
@@ -63,7 +69,7 @@ export const projects: Project[] = [
     type: 'app',
     title: 'Gym Management',
     description: 'Platform for managing your gym business.',
-    icon: '/icons/gym_management.png',
+    icon: gymImg,
     storeLinks: {
       appStore: 'https://apps.apple.com/us/app/gym-management',
       playStore: 'https://play.google.com/store/apps/details?id=com.gym.management',

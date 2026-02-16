@@ -4,10 +4,7 @@ import styled from '@emotion/styled';
 import { Fragment } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import tomelaterImg from '@/public/icons/tomelater.png';
-import ninedragonsImg from '@/public/icons/ninedragons.png';
-import gymImg from '@/public/icons/gym_management.png';
-import musicImg from '@/public/icons/apple_music_playlist.png';
+import { projects } from '../data';
 
 // --- Styled Components ---
 
@@ -113,13 +110,7 @@ const ProjectItem = styled(motion.div)`
   }
 `;
 
-// --- Data ---
-const projects = [
-  { name: 'Tomelater', icon: tomelaterImg },
-  { name: 'Nine Dragons', icon: ninedragonsImg },
-  { name: 'Gym Mgmt', icon: gymImg },
-  { name: 'Music Playlist', icon: musicImg },
-];
+
 
 export default function IntegrationsGrid({ dict }: { dict?: any }) {
   const t = dict || {
@@ -149,7 +140,7 @@ export default function IntegrationsGrid({ dict }: { dict?: any }) {
         </Title>
         
         <Grid>
-          {projects.map((project, index) => {
+          {projects.filter(p => p.type === 'web').map((project, index) => {
             // Determine start positions based on index to create "scattered" 3D look
             const zStart = 200 + (index * 50) % 500;
             const xStart = (index % 2 === 0 ? -1 : 1) * ((index * 20) % 300);
@@ -157,7 +148,7 @@ export default function IntegrationsGrid({ dict }: { dict?: any }) {
 
             return (
               <ProjectItem
-                key={project.name}
+                key={project.id}
                 initial={{ 
                   opacity: 0, 
                   scale: 0.5, 
@@ -185,7 +176,7 @@ export default function IntegrationsGrid({ dict }: { dict?: any }) {
                 style={{ transformPerspective: 1000 }} 
               >
                 {/* <img src={project.icon} alt={`${project.name} icon`} loading="lazy" /> */}
-                <Image src={project.icon} alt={`${project.name} icon`} loading="lazy" />
+                <Image src={project.icon} alt={`${project.title} icon`} loading="lazy" />
               </ProjectItem>
             );
           })}

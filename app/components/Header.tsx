@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import logoImg from '@/public/app/image-removebg-preview.png';
+import mobileLogoImg from '../icon.png';
 
 // Styles adapted from Craft.do
 const HeaderContainer = styled(motion.header)`
@@ -71,8 +72,8 @@ const Nav = styled.nav`
 const NavItem = styled.div`
   position: relative;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 1.1rem;
   color: #333;
   height: 100%;
   display: flex;
@@ -81,6 +82,10 @@ const NavItem = styled.div`
   
   &:hover {
     color: #000;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 1rem;
   }
   
   /* Prevent blue highlight on tap on mobile */
@@ -97,12 +102,21 @@ const Logo = styled.div`
   padding-left: 0.5rem;
   justify-self: start;
 
-  img {
+  .desktop-logo {
+    display: block;
     height: 32px;
     width: auto;
-    
-    @media (max-width: 390px) {
-      height: 24px;
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+
+  .mobile-logo {
+    display: none;
+    height: 32px;
+    width: auto;
+    @media (max-width: 640px) {
+      display: block;
     }
   }
 `;
@@ -288,7 +302,13 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
           <Image 
             src={logoImg} 
             alt="Gowoobro Logo" 
-            style={{ height: '32px', width: 'auto' }}
+            className="desktop-logo"
+            priority
+          />
+          <Image 
+            src={mobileLogoImg} 
+            alt="Gowoobro Logo Mobile" 
+            className="mobile-logo"
             priority
           />
         </Logo>
@@ -311,7 +331,7 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
 
 
         <RightSection>
-          <CTAButton href="#contact">{t.contact}</CTAButton>
+          <CTAButton href="mailto:[EMAIL_ADDRESS]">{t.contact}</CTAButton>
         </RightSection>
       </TopBar>
 
@@ -331,7 +351,7 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
                   {activeTab === 'app' && apps.map(app => (
                     <CardLink key={app.id} href={`#${app.id}`}>
                       <IconPlaceholder>
-                        <img src={app.icon} alt={app.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                        <Image src={app.icon} alt={app.title} width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }} />
                       </IconPlaceholder>
                       <TextContent>
                         <CardTitle>{app.title}</CardTitle>
@@ -348,7 +368,7 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
                   {activeTab === 'web' && webs.map(web => (
                     <CardLink key={web.id} href={`#${web.id}`}>
                        <IconPlaceholder>
-                         <img src={web.icon} alt={web.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                         <Image src={web.icon} alt={web.title} width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }} />
                        </IconPlaceholder>
                       <TextContent>
                         <CardTitle>{web.title}</CardTitle>
