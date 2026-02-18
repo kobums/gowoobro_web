@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  frontend:
+    restart: always
+    build: .
+    platform: linux/amd64
+    image: kobums/gowoobro_web:latest
+    ports:
+      - "9007:9007"
