@@ -331,7 +331,7 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
 
 
         <RightSection>
-          <CTAButton href="mailto:[EMAIL_ADDRESS]">{t.contact}</CTAButton>
+          <CTAButton href={`mailto:${process.env.NEXT_PUBLIC_EMAIL}`}>{t.contact}</CTAButton>
         </RightSection>
       </TopBar>
 
