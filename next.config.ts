@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         source: "/api/:path*",
         destination: "http://gowoobro.com/api/:path*",
       },
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:8007/api/:path*",
+      },
     ];
   },
 };
