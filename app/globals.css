@@ -29,6 +29,7 @@ body {
   box-sizing: border-box;
   background-color: #f9f9fb;
   width: 100%;
+  min-width: 375px;
 }
 
 html {

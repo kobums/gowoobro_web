@@ -222,7 +222,7 @@ const SubmitButton = styled.button`
   height: 40px;
   border-radius: 12px;
   border: none;
-  background-color: ${props => props.disabled ? '#f3f4f6' : '#7c3aed'};
+  background-color: ${props => props.disabled ? '#f3f4f6' : '#0f071eff'};
   color: ${props => props.disabled ? '#d1d5db' : 'white'};
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   display: flex;
