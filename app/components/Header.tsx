@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import { useState, useRef, useEffect } from 'react';
-import { projects } from '../data';
+import { Project } from '../types/models';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -238,7 +238,7 @@ function useElementSize() {
   return [ref, size] as const;
 }
 
-export default function Header({ dict }: { dict?: any }) { // Optional during migration, strictly typed later
+export default function Header({ dict, projects }: { dict?: any, projects: Project[] }) { // Optional during migration, strictly typed later
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [contentRef, contentSize] = useElementSize();
@@ -351,7 +351,7 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
                   {activeTab === 'app' && apps.map(app => (
                     <CardLink key={app.id} href={`#${app.id}`}>
                       <IconPlaceholder>
-                        <Image src={app.icon} alt={app.title} width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }} />
+                        <img src={process.env.NEXT_PUBLIC_IMAGE_URL + app.iconurl} alt={`${app.title} icon`} loading="lazy" width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }}  />
                       </IconPlaceholder>
                       <TextContent>
                         <CardTitle>{app.title}</CardTitle>
@@ -367,8 +367,8 @@ export default function Header({ dict }: { dict?: any }) { // Optional during mi
 
                   {activeTab === 'web' && webs.map(web => (
                     <CardLink key={web.id} href={`#${web.id}`}>
-                       <IconPlaceholder>
-                         <Image src={web.icon} alt={web.title} width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }} />
+                      <IconPlaceholder>
+                        <img src={process.env.NEXT_PUBLIC_IMAGE_URL + web.iconurl} alt={`${web.title} icon`} loading="lazy" width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }}  />
                        </IconPlaceholder>
                       <TextContent>
                         <CardTitle>{web.title}</CardTitle>

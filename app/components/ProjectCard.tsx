@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { Project } from '../data';
+import { Project } from '../types/models';
 import Link from 'next/link';
 
 const Card = styled.div`
@@ -92,7 +92,7 @@ const QRCodePlaceholder = styled.div`
 
 export default function ProjectCard({ project }: { project: Project }) {
   return (
-    <Card id={project.id}>
+    <Card id={`${project.id}`}>
       <CardImage>{project.title[0]}</CardImage>
       <CardContent>
         <Title>{project.title}</Title>
@@ -112,8 +112,8 @@ export default function ProjectCard({ project }: { project: Project }) {
                {/* In a real app, generate QR code here. Using placeholder for now. */}
                <QRCodePlaceholder>Download on App Store</QRCodePlaceholder>
                 
-               {project.storeLinks?.appStore && (
-                 <div style={{ display: 'none' }}>App Store Link: {project.storeLinks.appStore}</div>
+               {project.appstoreurl && (
+                 <div style={{ display: 'none' }}>App Store Link: {project.appstoreurl}</div>
                )}
             </div>
              <p style={{fontSize: '0.8rem', color: '#999', marginTop: '0.5rem'}}>Scan to download</p>

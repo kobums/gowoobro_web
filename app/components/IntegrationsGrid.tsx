@@ -4,9 +4,7 @@ import styled from '@emotion/styled';
 import { Fragment } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { projects } from '../data';
-
-// --- Styled Components ---
+import { Project } from '../types/models';
 
 // --- Styled Components ---
 
@@ -85,7 +83,7 @@ const ProjectItem = styled(motion.div)`
   justify-content: center;
   aspect-ratio: 1;
   background: transparent;
-  border-radius: 50px; /* Changed from 50px to prevent circle look on mobile */
+  border-radius: 22%; /* Changed from 50px to prevent circle look on mobile */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   border: none;
   padding: 0;
@@ -104,15 +102,11 @@ const ProjectItem = styled(motion.div)`
     object-fit: cover;
     display: block;
   }
-  
-  @media (max-width: 768px) {
-    border-radius: 24px;
-  }
 `;
 
 
 
-export default function IntegrationsGrid({ dict }: { dict?: any }) {
+export default function IntegrationsGrid({ dict, projects }: { dict?: any, projects: Project[] }) {
   const t = dict || {
     title: "Built with passion,\npowered by modern tech"
   };
@@ -175,8 +169,7 @@ export default function IntegrationsGrid({ dict }: { dict?: any }) {
                 }}
                 style={{ transformPerspective: 1000 }} 
               >
-                {/* <img src={project.icon} alt={`${project.name} icon`} loading="lazy" /> */}
-                <Image src={project.icon} alt={`${project.title} icon`} loading="lazy" />
+                <img src={process.env.NEXT_PUBLIC_IMAGE_URL + project.iconurl} alt={`${project.title} icon`} loading="lazy" />
               </ProjectItem>
             );
           })}
