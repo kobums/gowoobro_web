@@ -23,7 +23,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       </HeroSection>
       <IntegrationsGrid dict={dict.integrations} projects={projects} />
       <SuiteGrid dict={dict.suite} />
-      <Footer dict={dict.footer} lang={lang} />
+      <Footer dict={dict.footer} lang={lang} projects={projects} />
     </Main>
   );
 }

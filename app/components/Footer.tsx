@@ -373,7 +373,7 @@ const LanguageMenuItem = styled.button<{ isActive: boolean }>`
   }
 `;
 
-export default function Footer({ dict, lang }: { dict?: any, lang?: string }) {
+export default function Footer({ dict, lang, projects = [] }: { dict?: any, lang?: string, projects?: import('../types/models').Project[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const currentLang = lang || 'en';
@@ -474,9 +474,9 @@ export default function Footer({ dict, lang }: { dict?: any, lang?: string }) {
             <ColumnTitle>{t.profile}</ColumnTitle>
             <Divider />
             <LinkList>
-              <LinkItem><a href="/about">{t.about}</a></LinkItem>
-              <LinkItem><a href="/experience">{t.experience}</a></LinkItem>
-              <LinkItem><a href="/skills">{t.skills}</a></LinkItem>
+              <LinkItem><a href={`/${currentLang}/about`}>{t.about}</a></LinkItem>
+              <LinkItem><a href={`/${currentLang}/experience`}>{t.experience}</a></LinkItem>
+              <LinkItem><a href={`/${currentLang}/skills`}>{t.skills}</a></LinkItem>
               <LinkItem><a href="https://github.com/kobums" target="_blank" rel="noreferrer">GitHub</a></LinkItem>
               <LinkItem><a href="https://linkedin.com/in/gowoobro" target="_blank" rel="noreferrer">LinkedIn</a></LinkItem>
             </LinkList>
@@ -492,19 +492,48 @@ export default function Footer({ dict, lang }: { dict?: any, lang?: string }) {
           </LinkColumn>
 
           <LinkColumn>
-            <ColumnTitle>{t.major_works}</ColumnTitle>
-            <Divider />
-            <LinkList>
-              <LinkItem><a href="/project/tomelater">Tomelater</a></LinkItem>
-              <LinkItem><a href="/project/ninedragons">Nine Dragons</a></LinkItem>
-              <LinkItem><a href="/project/gym-management">Gym Management</a></LinkItem>
-              <LinkItem><a href="/project/apple-music-playlist">Apple Music Playlist</a></LinkItem>
-            </LinkList>
+             <ColumnTitle>{t.mobile_apps}</ColumnTitle>
+             <Divider />
+             <LinkList>
+               {projects?.filter(p => p.type === 'app').slice(0, 8).map((project) => (
+                 <LinkItem key={project.id}>
+                   <a href={`/${currentLang}/app/${project.id}`}>
+                     {project.title}
+                   </a>
+                 </LinkItem>
+               ))}
+               {(!projects || projects.length === 0) && (
+                 <>
+                   <LinkItem><a href="/project/gym-management">Gym Management</a></LinkItem>
+                   <LinkItem><a href="/project/apple-music-playlist">Apple Music Playlist</a></LinkItem>
+                 </>
+               )}
+             </LinkList>
           </LinkColumn>
+          
+          <LinkColumn>
+             <ColumnTitle>{t.web_platforms}</ColumnTitle>
+             <Divider />
+             <LinkList>
+               {projects?.filter(p => p.type === 'web').slice(0, 8).map((project) => (
+                 <LinkItem key={project.id}>
+                   <a href={project.url || '#'} target="_blank" rel="noopener noreferrer">
+                     {project.title}
+                   </a>
+                 </LinkItem>
+               ))}
+               {(!projects || projects.length === 0) && (
+                 <>
+                   <LinkItem><a href="/project/tomelater">Tomelater</a></LinkItem>
+                   <LinkItem><a href="/project/ninedragons">Nine Dragons</a></LinkItem>
+                 </>
+               )}
+             </LinkList>
+           </LinkColumn>
 
-          <HiddenColumn>
+          {/* <HiddenColumn>
             <div style={{height: '1px', width: '100%'}}></div>
-          </HiddenColumn>
+          </HiddenColumn> */}
 
           <DownloadColumn>
             <ColumnTitle>{t.download}</ColumnTitle>
