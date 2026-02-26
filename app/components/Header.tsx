@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import logoImg from '@/public/app/image-removebg-preview.png';
 import mobileLogoImg from '../icon.png';
+import { useParams } from 'next/navigation';
 
 // Styles adapted from Craft.do
 const HeaderContainer = styled(motion.header)`
@@ -92,11 +93,12 @@ const NavItem = styled.div`
   -webkit-tap-highlight-color: transparent;
 `;
 
-const Logo = styled.div`
+const Logo = styled(Link)`
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: -0.02em;
   color: #000;
+  text-decoration: none;
   display: flex;
   align-items: center;
   padding-left: 0.5rem;
@@ -238,7 +240,11 @@ function useElementSize() {
   return [ref, size] as const;
 }
 
+
+
 export default function Header({ dict, projects }: { dict?: any, projects: Project[] }) { // Optional during migration, strictly typed later
+  const params = useParams();
+  const lang = params?.lang || 'en';
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [contentRef, contentSize] = useElementSize();
@@ -298,7 +304,7 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
       }}
     >
       <TopBar>
-        <Logo>
+        <Logo href={`/${lang}`}>
           <Image 
             src={logoImg} 
             alt="Gowoobro Logo" 
@@ -349,7 +355,7 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
               <ContentWrapper>
                 <Grid>
                   {activeTab === 'app' && apps.map(app => (
-                    <CardLink key={app.id} href={`#${app.id}`}>
+                    <CardLink key={app.id} href={`/${lang}/app/${app.id}`}>
                       <IconPlaceholder>
                         <img src={process.env.NEXT_PUBLIC_IMAGE_URL + app.iconurl} alt={`${app.title} icon`} loading="lazy" width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }}  />
                       </IconPlaceholder>
@@ -366,7 +372,7 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
                   )}
 
                   {activeTab === 'web' && webs.map(web => (
-                    <CardLink key={web.id} href={`#${web.id}`}>
+                    <CardLink key={web.id} href={web.url || '#'} target="_blank" rel="noopener noreferrer">
                       <IconPlaceholder>
                         <img src={process.env.NEXT_PUBLIC_IMAGE_URL + web.iconurl} alt={`${web.title} icon`} loading="lazy" width={40} height={40} style={{ objectFit: 'cover', borderRadius: '8px' }}  />
                        </IconPlaceholder>
