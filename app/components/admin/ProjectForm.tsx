@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Project, ProjectType } from '../../types/models';
 import { createProject, updateProject } from '../../api/projects';
 import { uploadFile } from '../../api/upload';
+import { revalidateHomePage } from '../../actions/revalidate';
 import styled from '@emotion/styled';
 
 const FormContainer = styled.form`
@@ -100,6 +101,7 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<Project>({
     id: 0,
@@ -116,6 +118,15 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
     ...initialData,
   });
 
+  // Cleanup blob URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -129,6 +140,7 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
     try {
       let finalData = { ...formData }; // Create a copy to modify
 
+      // Only upload if a new file is selected
       if (selectedFile) {
         try {
           const data = await uploadFile(selectedFile);
@@ -140,6 +152,9 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
           setLoading(false);
           return; // Stop submission if upload fails
         }
+      } else if (isEditMode && initialData?.iconurl) {
+        // In edit mode, keep the existing iconurl if no new file is selected
+        finalData.iconurl = initialData.iconurl;
       }
 
       if (isEditMode) {
@@ -147,6 +162,10 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
       } else {
         await createProject(finalData);
       }
+
+      // Revalidate home page to show updated data immediately
+      await revalidateHomePage();
+
       router.push('/admin/projects');
       router.refresh();
     } catch (err) {
@@ -214,21 +233,26 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
 
       <FormGroup>
         <Label htmlFor="iconurl">Icon URL</Label>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <Label 
-            htmlFor="icon-upload" 
-            style={{ 
-              cursor: 'pointer', 
-              padding: '0.75rem', 
-              border: '1px solid #d1d5db', 
-              borderRadius: '6px', 
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Label
+            htmlFor="icon-upload"
+            style={{
+              cursor: 'pointer',
+              padding: '0.75rem',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
               backgroundColor: '#f3f4f6',
               fontSize: '0.9rem',
               fontWeight: 500
             }}
           >
-            {selectedFile ? 'File Selected' : 'Upload'}
+            {selectedFile ? 'Change File' : 'Upload File'}
           </Label>
+          {selectedFile && (
+            <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+              {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
+            </span>
+          )}
           <input
             type="file"
             id="icon-upload"
@@ -237,17 +261,30 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
+                // Check file size (5MB limit)
+                const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                if (file.size > maxSize) {
+                  setError('File size must be less than 5MB');
+                  e.target.value = ''; // Clear the input
+                  return;
+                }
+
                 setSelectedFile(file);
-                // Optional: Preview locally
+                setError(null);
+                // Create preview URL
                 const objectUrl = URL.createObjectURL(file);
-                setFormData(prev => ({ ...prev, iconurl: objectUrl }));
+                setPreviewUrl(objectUrl);
               }
             }}
           />
         </div>
-        {formData.iconurl && (
+        {(previewUrl || formData.iconurl) && (
             <div style={{ marginTop: '0.5rem' }}>
-              <img src={process.env.NEXT_PUBLIC_IMAGE_URL + formData.iconurl} alt="Icon preview" style={{ width: 50, height: 50, objectFit: 'contain', border: '1px solid #eee', borderRadius: 4 }} />
+              <img
+                src={previewUrl || (process.env.NEXT_PUBLIC_IMAGE_URL + formData.iconurl)}
+                alt="Icon preview"
+                style={{ width: 50, height: 50, objectFit: 'contain', border: '1px solid #eee', borderRadius: 4 }}
+              />
             </div>
         )}
       </FormGroup>
