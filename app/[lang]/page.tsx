@@ -9,6 +9,9 @@ import React from 'react';
 
 import { getProjects } from "../api/projects";
 
+// Revalidate every 10 seconds to show fresh data
+export const revalidate = 10;
+
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   // Await params for Next.js 15+ compatibility or standard usage
   const { lang } = await params;
