@@ -6,6 +6,16 @@ export interface Questions {
   extra?: Record<string, any>;
 }
 
+export interface Answers {
+  id?: number;
+  address: string;
+  question: number;
+  questionText?: string;
+  answer: string;
+  date?: string;
+  extra?: Record<string, any>;
+}
+
 export interface Ipblock {
   id?: number;
   address: string;
