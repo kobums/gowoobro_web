@@ -10,10 +10,11 @@ Flutter 앱, 웹 플랫폼 등 다양한 프로젝트를 소개하고, 방문자
 ## ✨ 주요 기능
 
 - **💬 인터랙티브 채팅 인터페이스** — AI 스타일의 Q&A 채팅 UI로 방문자의 질문을 접수
+- **📬 FAB Q&A 히스토리** — 우하단 플로팅 버튼으로 본인 IP의 질문/답변 내역 확인, 새 답변 시 빨간 알림 배지 표시
 - **📱 프로젝트 쇼케이스** — Flutter 모바일 앱 & 웹 플랫폼 프로젝트 카드 형태로 전시
 - **🌍 다국어 지원 (i18n)** — 한국어 / English 자동 라우팅 및 전환
 - **🎨 모던 UI/UX** — Framer Motion 애니메이션, Glassmorphism, 다크 테마
-- **🔧 관리자 패널** — 프로젝트 관리를 위한 Admin 페이지
+- **🔧 관리자 패널** — 질문 목록 확인 및 답변 작성 (`/admin/answers`), 프로젝트 관리 (`/admin/projects`)
 - **🐳 Docker 배포** — Dockerfile & Docker Compose를 통한 컨테이너 배포 지원
 
 ---
@@ -38,27 +39,33 @@ Flutter 앱, 웹 플랫폼 등 다양한 프로젝트를 소개하고, 방문자
 ```
 gowoobro_web/
 ├── app/
-│   ├── [lang]/           # i18n 동적 라우팅 (ko, en)
-│   │   ├── admin/        # 관리자 페이지
-│   │   ├── layout.tsx    # 루트 레이아웃
-│   │   └── page.tsx      # 메인 페이지
-│   ├── api/              # API Routes (프록시)
-│   ├── components/       # UI 컴포넌트
-│   │   ├── ChatInterface.tsx
+│   ├── [lang]/                    # i18n 동적 라우팅 (ko, en)
+│   │   ├── layout.tsx             # 루트 레이아웃 (Emotion, React Query)
+│   │   ├── page.tsx               # 메인 페이지 (SSR)
+│   │   └── admin/
+│   │       ├── layout.tsx         # 비밀번호 게이트 (NEXT_PUBLIC_ADMIN_PASSWORD)
+│   │       ├── answers/page.tsx   # 질문 목록 + 답변 작성 관리 페이지
+│   │       └── projects/          # 프로젝트 CRUD 관리 페이지
+│   ├── api/                       # Axios API 클라이언트 함수
+│   │   ├── questions.ts
+│   │   ├── answers.ts             # GET ?address= 로 IP 필터링
+│   │   ├── ipblock.ts
+│   │   └── projects.ts
+│   ├── components/
+│   │   ├── ChatInterface.tsx      # 질문 폼 + 제출 후 네트워크 힌트 Toast
+│   │   ├── FAB.tsx                # Q&A 히스토리 패널 + 알림 배지 + 첫 방문 툴팁
 │   │   ├── Header.tsx
 │   │   ├── Footer.tsx
-│   │   ├── ProjectCard.tsx
 │   │   ├── SuiteGrid.tsx
 │   │   ├── IntegrationsGrid.tsx
 │   │   └── PageLayout.tsx
-│   ├── dictionaries/     # 다국어 사전 (ko.json, en.json)
-│   ├── lib/              # 유틸리티 (Axios 인스턴스)
-│   └── types/            # TypeScript 타입 정의
-├── public/               # 정적 에셋
-├── middleware.ts          # i18n 리다이렉트 미들웨어
-├── docker-compose.yml
-├── dockerfile
-├── Makefile
+│   ├── dictionaries/              # 다국어 사전
+│   │   ├── ko.json
+│   │   └── en.json
+│   ├── lib/axios.ts               # Axios 인스턴스
+│   └── types/models.ts            # 공유 TypeScript 인터페이스
+├── public/                        # 정적 에셋
+├── middleware.ts                  # i18n 리다이렉트 미들웨어
 └── package.json
 ```
 
@@ -94,10 +101,14 @@ make run
 프로젝트 루트에 `.env` 파일을 생성합니다:
 
 ```env
-NEXT_PUBLIC_API_URL=your-backend-url
+NEXT_PUBLIC_API_URL=http://localhost:8007/api   # 백엔드 API URL
 NEXT_PUBLIC_EMAIL=your-email@example.com
-NEXT_PUBLIC_IMAGE_URL=your-image-url
+NEXT_PUBLIC_IMAGE_URL=https://your-cdn/webdata/ # 프로젝트 아이콘 CDN
+NEXT_PUBLIC_ADMIN_PASSWORD=your-password        # /admin 접근 비밀번호
 ```
+
+> **어드민 페이지**: `/ko/admin/answers` 또는 `/en/admin/answers`  
+> 비밀번호는 브라우저 탭 세션 동안 유지됩니다.
 
 ---
 
