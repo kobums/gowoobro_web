@@ -19,7 +19,8 @@
       "growth": "커리어 성장",
       "coaching": "매니저 코칭",
       "success_message": "질문이 등록되었습니다!\n확인 후 답변 드리겠습니다.",
-      "error_message": "전송에 실패했습니다.\n다시 시도해주세요."
+      "error_message": "전송에 실패했습니다.\n다시 시도해주세요.",
+      "hint_message": "와이파이와 셀룰러는 서로 다른 주소예요.\n지금 네트워크로 답변을 확인해 주세요."
     }
   },
   "integrations": {

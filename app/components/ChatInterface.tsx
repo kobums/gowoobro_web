@@ -347,11 +347,35 @@ const MobileBr = styled.br`
   }
 `;
 
+const HintToast = styled(motion.div)`
+  position: fixed;
+  top: 2rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  margin: 0 auto;
+  width: fit-content;
+  max-width: calc(100vw - 3rem);
+  background: #0f071e;
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.6;
+  padding: 0.7rem 1.2rem;
+  border-radius: 14px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 300;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  white-space: normal;
+  word-break: keep-all;
+`;
+
 // --- Component ---
 
 export default function ChatInterface({ dict }: { dict?: any }) {
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [showHint, setShowHint] = useState(false);
   const [ip, setIp] = useState<string>('');
 
   // Fallback dict
@@ -371,6 +395,7 @@ export default function ChatInterface({ dict }: { dict?: any }) {
   // Safe access to messages
   const successMsg = t.suggestions?.success_message || 'Success';
   const errorMsg = t.suggestions?.error_message || 'Error';
+  const hintMsg = t.suggestions?.hint_message || 'Use the same network when checking your reply.';
 
   useEffect(() => {
     const fetchIpAndBlock = async () => {
@@ -401,8 +426,9 @@ export default function ChatInterface({ dict }: { dict?: any }) {
     onSuccess: () => {
       setStatus('success');
       setMessage('');
-      // Clear success message after 3 seconds
       setTimeout(() => setStatus('idle'), 3000);
+      setShowHint(true);
+      setTimeout(() => setShowHint(false), 5000);
     },
     onError: () => {
       setStatus('error');
@@ -543,7 +569,25 @@ export default function ChatInterface({ dict }: { dict?: any }) {
         </SuggestionRow> */}
 
       </BoxWrapper>
-      
+
+      <AnimatePresence>
+        {showHint && (
+          <HintToast
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.25 }}
+          >
+            {hintMsg.split('\n').map((line: string, i: number, arr: string[]) => (
+              <Fragment key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </Fragment>
+            ))}
+          </HintToast>
+        )}
+      </AnimatePresence>
+
     </ChatContainer>
   );
 }
