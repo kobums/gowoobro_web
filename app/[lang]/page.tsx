@@ -5,6 +5,7 @@ import IntegrationsGrid from "../components/IntegrationsGrid";
 import SuiteGrid from "../components/SuiteGrid";
 import Footer from "../components/Footer";
 import { Main, HeroSection } from "../components/PageLayout";
+import FAB from "../components/FAB";
 import React from 'react';
 
 import { getProjects } from "../api/projects";
@@ -27,6 +28,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <IntegrationsGrid dict={dict.integrations} projects={projects} />
       <SuiteGrid dict={dict.suite} />
       <Footer dict={dict.footer} lang={lang} projects={projects} />
+      <FAB />
     </Main>
   );
 }
