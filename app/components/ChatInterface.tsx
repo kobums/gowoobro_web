@@ -6,6 +6,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createQuestion } from '../api/questions';
+import { getBlockedReason } from '../lib/axios';
 
 // --- Animations ---
 const glowAnimation = keyframes`
@@ -376,6 +377,8 @@ export default function ChatInterface({ dict }: { dict?: any }) {
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [showHint, setShowHint] = useState(false);
   const [ip, setIp] = useState<string>('');
+  // 차단된 IP 일 때 백엔드가 내려준 사유. 없으면 일반 오류 문구를 쓴다.
+  const [blockedReason, setBlockedReason] = useState<string | null>(null);
 
   // Fallback dict
   const t = dict || {
@@ -421,11 +424,14 @@ export default function ChatInterface({ dict }: { dict?: any }) {
     onSuccess: () => {
       setStatus('success');
       setMessage('');
+      setBlockedReason(null);
       setTimeout(() => setStatus('idle'), 3000);
       setShowHint(true);
       setTimeout(() => setShowHint(false), 5000);
     },
-    onError: () => {
+    onError: (error) => {
+      // 차단된 IP 면 백엔드가 사유를 실어 보낸다. 있으면 그걸 보여준다.
+      setBlockedReason(getBlockedReason(error));
       setStatus('error');
       // Clear error message after 3 seconds
       setTimeout(() => setStatus('idle'), 3000);
@@ -538,7 +544,7 @@ export default function ChatInterface({ dict }: { dict?: any }) {
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <div>
-                {errorMsg.split('\n').map((line: string, i: number, arr: string[]) => (
+                {(blockedReason ?? errorMsg).split('\n').map((line: string, i: number, arr: string[]) => (
                   <Fragment key={i}>
                     {line}
                     {i < arr.length - 1 && <MobileBr />}

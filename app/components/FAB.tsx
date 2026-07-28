@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { getAnswers } from '../api/answers';
+import { getBlockedReason } from '../lib/axios';
 import { Answers } from '../types/models';
 
 // --- Styled Components ---
@@ -351,12 +352,15 @@ export default function FAB() {
     return () => { clearTimeout(show); clearTimeout(hide); };
   }, []);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['answers', ip],
     queryFn: () => getAnswers({ address: ip }),
     enabled: !!ip,
     refetchInterval: 60_000,
   });
+
+  // 차단된 IP 면 조회가 403 으로 막힌다. 백엔드가 준 사유를 그대로 보여준다.
+  const blockedReason = getBlockedReason(error);
 
   const items: Answers[] = data?.items ?? [];
 
@@ -451,6 +455,14 @@ export default function FAB() {
                   <LoadingDots>
                     <span /><span /><span />
                   </LoadingDots>
+                ) : blockedReason ? (
+                  <EmptyState>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                    </svg>
+                    <p>{blockedReason}</p>
+                  </EmptyState>
                 ) : items.length === 0 ? (
                   <EmptyState>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

@@ -19,6 +19,8 @@ export interface Answers {
 export interface Ipblock {
   id?: number;
   address: string;
+  /** 차단 사유. 차단된 방문자에게 그대로 노출된다. */
+  reason?: string;
   date?: string;
   extra?: Record<string, any>;
 }
