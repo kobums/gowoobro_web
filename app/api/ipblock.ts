@@ -1,6 +1,8 @@
 import api from '../lib/axios';
-import { Ipblock, ListResponse, SingleResponse, CreateResponse, PagingParams } from '../types/models';
+import { Ipblock, ListResponse, SingleResponse, PagingParams } from '../types/models';
 
+// ipblock 은 접근이 차단된 IP 목록이다. 차단 IP 는 DB 에 직접 넣고, 백엔드는 조회
+// 엔드포인트만 노출한다 — 그래서 create/update/delete 함수는 없다.
 const ENDPOINT = '/ipblock';
 
 export const getIpblocks = async (params?: PagingParams & { address?: string; orderby?: string }) => {
@@ -10,21 +12,6 @@ export const getIpblocks = async (params?: PagingParams & { address?: string; or
 
 export const getIpblock = async (id: number) => {
   const response = await api.get<SingleResponse<Ipblock>>(`${ENDPOINT}/${id}`);
-  return response.data;
-};
-
-export const createIpblock = async (data: Ipblock) => {
-  const response = await api.post<CreateResponse>(ENDPOINT, data);
-  return response.data;
-};
-
-export const updateIpblock = async (data: Ipblock) => {
-  const response = await api.put(ENDPOINT, data);
-  return response.data;
-};
-
-export const deleteIpblock = async (id: number) => {
-  const response = await api.delete(ENDPOINT, { data: { id } });
   return response.data;
 };
 

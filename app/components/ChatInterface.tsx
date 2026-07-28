@@ -6,7 +6,6 @@ import { useState, useEffect, Fragment } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createQuestion } from '../api/questions';
-import { createIpblock } from '../api/ipblock';
 
 // --- Animations ---
 const glowAnimation = keyframes`
@@ -397,23 +396,19 @@ export default function ChatInterface({ dict }: { dict?: any }) {
   const errorMsg = t.suggestions?.error_message || 'Error';
   const hintMsg = t.suggestions?.hint_message || 'Use the same network when checking your reply.';
 
+  // 질문 등록과 FAB 의 답변 조회가 방문자 IP 를 키로 쓰기 때문에 여기서 한 번 구해둔다.
   useEffect(() => {
-    const fetchIpAndBlock = async () => {
+    const fetchIp = async () => {
       try {
         const ipRes = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipRes.json();
-        const clientIp = ipData.ip;
-        setIp(clientIp);
-
-        if (clientIp) {
-          await createIpblock({ address: clientIp });
-        }
+        setIp(ipData.ip);
       } catch (error) {
-        console.error('Failed to fetch IP or send block request:', error);
+        console.error('Failed to fetch IP:', error);
       }
     };
 
-    fetchIpAndBlock();
+    fetchIp();
   }, []);
 
   const sendMessageMutation = useMutation({
