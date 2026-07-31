@@ -15,11 +15,43 @@ export const getBlockedReason = (error: unknown): string | null => {
   return reason ? reason : null;
 };
 
+/** 관리자 토큰이 인증 만료로 거부됐는지. 게이트를 다시 띄울지 판단에 쓴다. */
+export const isUnauthorized = (error: unknown): boolean =>
+  (error as AxiosError)?.response?.status === 401;
+
+// 토큰 키는 여기에 둔다. api/auth.ts 가 이 파일을 import 하므로, 반대로
+// import 하면 순환 참조가 된다.
+export const ADMIN_TOKEN_KEY = 'admin_token'; // secret-scan: ok sessionStorage 키 이름이지 자격증명이 아니다
+
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://gowoobro.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// 관리자 토큰이 있으면 모든 요청에 실어 보낸다. 공개 요청에 섞여 나가도
+// 서버가 무시하므로 경로를 가리지 않는다.
+api.interceptors.request.use(config => {
+  if (typeof window !== 'undefined') {
+    const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+// 토큰이 만료되거나 무효면 들고 있어봐야 소용없다. 지워서 다음 렌더에
+// 로그인 화면이 다시 뜨게 한다.
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (isUnauthorized(error) && typeof window !== 'undefined') {
+      sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;

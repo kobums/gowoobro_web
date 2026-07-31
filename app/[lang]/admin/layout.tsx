@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
+import { login, getToken } from '../../api/auth';
 
 const Gate = styled.div`
   min-height: 100vh;
@@ -85,29 +86,32 @@ const ErrorMsg = styled.p`
   text-align: center;
 `;
 
-const SESSION_KEY = 'admin_auth';
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [authed, setAuthed] = useState(false);
   const [ready, setReady] = useState(false);
   const [pw, setPw] = useState('');
   const [error, setError] = useState(false);
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY) === 'true') {
-      setAuthed(true);
-    }
+    // 토큰이 있으면 일단 들여보낸다. 실제 판정은 서버가 매 요청마다 하므로,
+    // 만료된 토큰이면 첫 API 호출에서 401 을 받고 게이트로 돌아온다.
+    setAuthed(!!getToken());
     setReady(true);
   }, []);
 
   if (!ready) return null;
 
   if (!authed) {
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      const correct = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-      if (pw === correct) {
-        sessionStorage.setItem(SESSION_KEY, 'true');
+      setPending(true);
+
+      // 비밀번호 비교는 서버가 한다. 브라우저는 토큰만 받아 들고 있는다.
+      const ok = await login(pw);
+
+      setPending(false);
+      if (ok) {
         setAuthed(true);
         setError(false);
       } else {
@@ -130,8 +134,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               value={pw}
               onChange={e => { setPw(e.target.value); setError(false); }}
               autoFocus
+              disabled={pending}
             />
-            <SubmitBtn type="submit">입장</SubmitBtn>
+            <SubmitBtn type="submit" disabled={pending}>{pending ? '확인 중…' : '입장'}</SubmitBtn>
             {error && <ErrorMsg>비밀번호가 올바르지 않습니다.</ErrorMsg>}
           </form>
         </Card>
