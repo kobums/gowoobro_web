@@ -23,8 +23,18 @@ export const isUnauthorized = (error: unknown): boolean =>
 // import 하면 순환 참조가 된다.
 export const ADMIN_TOKEN_KEY = 'admin_token'; // secret-scan: ok sessionStorage 키 이름이지 자격증명이 아니다
 
+// SSR 은 같은 도커 네트워크의 백엔드로 직행한다(API_URL). 공인 도메인을 거치면
+// 호스트를 한 바퀴 돌아 느리고, nginx 장애에 SSR 까지 같이 죽는다. 브라우저에서는
+// 컨테이너 이름을 해석할 수 없으므로 공개 URL(NEXT_PUBLIC_API_URL)을 쓴다.
+const baseURL =
+  typeof window === 'undefined'
+    ? process.env.API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      'https://gowoobro.com/api'
+    : process.env.NEXT_PUBLIC_API_URL || 'https://gowoobro.com/api';
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://gowoobro.com/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

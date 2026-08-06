@@ -71,7 +71,8 @@ app/
 
 | Variable | Description |
 |----------|-------------|
-| `NEXT_PUBLIC_API_URL` | Backend base URL (default: `http://localhost:8007/api`) |
+| `NEXT_PUBLIC_API_URL` | Backend base URL for the browser (default: `https://gowoobro.com/api`) |
+| `API_URL` | Server-only backend base URL for SSR fetch (docker: `http://gowoobro_go:8007/api`; falls back to `NEXT_PUBLIC_API_URL`) |
 | `NEXT_PUBLIC_EMAIL` | Contact email shown in footer |
 | `NEXT_PUBLIC_IMAGE_URL` | CDN base for project icons |
 | `NEXT_PUBLIC_ADMIN_PASSWORD` | Password for `/admin` routes (checked client-side, stored in sessionStorage) |
