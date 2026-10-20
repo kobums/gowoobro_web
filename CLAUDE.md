@@ -24,7 +24,7 @@ app/
 │   ├── layout.tsx           # Root HTML shell, Emotion registry, React Query provider
 │   ├── page.tsx             # Main page — SSR, composes all sections
 │   ├── admin/
-│   │   ├── layout.tsx       # Password gate for all /admin routes (NEXT_PUBLIC_ADMIN_PASSWORD)
+│   │   ├── layout.tsx       # Login gate for all /admin routes (backend POST /login → admin token)
 │   │   ├── answers/page.tsx # Admin Q&A management — list questions, write answers
 │   │   └── projects/        # Project CRUD admin pages
 │   └── app/[id]/page.tsx    # Individual app detail page
@@ -75,10 +75,10 @@ app/
 | `API_URL` | Server-only backend base URL for SSR fetch (docker: `http://gowoobro_go:8007/api`; falls back to `NEXT_PUBLIC_API_URL`) |
 | `NEXT_PUBLIC_EMAIL` | Contact email shown in footer |
 | `NEXT_PUBLIC_IMAGE_URL` | CDN base for project icons |
-| `NEXT_PUBLIC_ADMIN_PASSWORD` | Password for `/admin` routes (checked client-side, stored in sessionStorage) |
 
 ## Admin Access
 
 URL: `/ko/admin/answers` or `/en/admin/answers`
-Password: set in `.env` as `NEXT_PUBLIC_ADMIN_PASSWORD`
-Session persists within the browser tab via `sessionStorage`.
+Password: checked by the backend (`ADMIN_PASSWORD` on gowoobro_go), which returns an admin JWT.
+The token (not the password) persists within the browser tab via `sessionStorage`. Never put the admin password in a `NEXT_PUBLIC_*` variable — those ship in the JS bundle.
+Home-page cache revalidation (`app/actions/revalidate.ts`) only runs when the caller passes an admin token the backend accepts.

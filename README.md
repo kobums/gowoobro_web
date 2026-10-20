@@ -43,7 +43,7 @@ gowoobro_web/
 │   │   ├── layout.tsx             # 루트 레이아웃 (Emotion, React Query)
 │   │   ├── page.tsx               # 메인 페이지 (SSR)
 │   │   └── admin/
-│   │       ├── layout.tsx         # 비밀번호 게이트 (NEXT_PUBLIC_ADMIN_PASSWORD)
+│   │       ├── layout.tsx         # 관리자 로그인 게이트 (백엔드 POST /login → 토큰)
 │   │       ├── answers/page.tsx   # 질문 목록 + 답변 작성 관리 페이지
 │   │       └── projects/          # 프로젝트 CRUD 관리 페이지
 │   ├── api/                       # Axios API 클라이언트 함수
@@ -104,11 +104,12 @@ make run
 NEXT_PUBLIC_API_URL=http://localhost:8007/api   # 백엔드 API URL
 NEXT_PUBLIC_EMAIL=your-email@example.com
 NEXT_PUBLIC_IMAGE_URL=https://your-cdn/webdata/ # 프로젝트 아이콘 CDN
-NEXT_PUBLIC_ADMIN_PASSWORD=your-password        # /admin 접근 비밀번호
+API_URL=http://gowoobro_go:8007/api              # (선택) SSR·서버 액션 전용 백엔드 URL
 ```
 
 > **어드민 페이지**: `/ko/admin/answers` 또는 `/en/admin/answers`  
-> 비밀번호는 브라우저 탭 세션 동안 유지됩니다.
+> 비밀번호는 백엔드(`ADMIN_PASSWORD`)가 확인하고, 발급된 관리자 토큰만 브라우저 탭 세션(sessionStorage)에 보관합니다.  
+> 웹에는 관리자 비밀번호를 두지 않습니다(`NEXT_PUBLIC_*` 값은 JS 번들에 그대로 노출됨).
 
 ---
 

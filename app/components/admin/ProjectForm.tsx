@@ -6,6 +6,7 @@ import { Project, ProjectType } from '../../types/models';
 import { createProject, updateProject } from '../../api/projects';
 import { uploadFile } from '../../api/upload';
 import { revalidateHomePage } from '../../actions/revalidate';
+import { getToken } from '../../api/auth';
 import styled from '@emotion/styled';
 
 const FormContainer = styled.form`
@@ -163,8 +164,9 @@ export default function ProjectForm({ initialData, isEditMode = false }: Project
         await createProject(finalData);
       }
 
-      // Revalidate home page to show updated data immediately
-      await revalidateHomePage();
+      // Revalidate home page to show updated data immediately.
+      // 서버 액션이 관리자 토큰을 백엔드로 확인한 뒤에만 무효화한다.
+      await revalidateHomePage(getToken());
 
       router.push('/admin/projects');
       router.refresh();
