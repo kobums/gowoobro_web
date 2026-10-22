@@ -134,7 +134,12 @@ export default function IntegrationsGrid({ dict, projects }: { dict?: any, proje
         </Title>
         
         <Grid>
-          {projects.filter(p => p.type === 'web').map((project, index) => {
+          {/* 웹·앱 구분 없이 모든 프로젝트를 보여준다. 같은 서비스가 web/app 두 줄로
+              들어 있으므로 key 기준으로 한 번만, 아이콘이 있는 것만 그린다. */}
+          {projects
+            .filter(p => p.iconurl)
+            .filter((p, i, arr) => arr.findIndex(q => q.key === p.key) === i)
+            .map((project, index) => {
             // Determine start positions based on index to create "scattered" 3D look
             const zStart = 200 + (index * 50) % 500;
             const xStart = (index % 2 === 0 ? -1 : 1) * ((index * 20) % 300);
