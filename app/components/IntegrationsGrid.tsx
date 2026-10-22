@@ -57,16 +57,19 @@ const Title = styled(motion.h2)`
   }
 `;
 
+/* 아이콘 개수가 몇 개로 늘어도 줄마다 가운데 정렬되도록 flex wrap 을 쓴다.
+   grid 1fr 은 마지막 줄 아이템이 왼쪽에 붙는다. 크기는 clamp 로 화면 폭에
+   따라 자연스럽게 줄어든다. */
 const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.5rem;
   width: 100%;
   max-width: 1000px;
   transform-style: preserve-3d;
-  
+
   @media (max-width: 480px) {
-    grid-template-columns: repeat(2, 1fr); 
     gap: 1rem;
   }
 
@@ -81,6 +84,7 @@ const ProjectItem = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: clamp(64px, 18vw, 104px);
   aspect-ratio: 1;
   background: transparent;
   border-radius: 22%; /* Changed from 50px to prevent circle look on mobile */
