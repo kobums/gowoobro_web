@@ -1,8 +1,8 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { Fragment } from 'react';
-import { motion } from 'framer-motion';
+import { Fragment, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { Project } from '../types/models';
 
@@ -110,6 +110,13 @@ export default function IntegrationsGrid({ dict, projects }: { dict?: any, proje
   const t = dict || {
     title: "Built with passion,\npowered by modern tech"
   };
+
+  // 등장 애니메이션 트리거는 아이템이 아니라 그리드 기준이다. 아이템마다
+  // whileInView 를 쓰면 흩뿌리기 초기 transform 이 overflow hidden 바깥까지
+  // 밀려난 아이템은 뷰포트 교차가 영영 감지되지 않아 opacity 0 으로 숨은 채
+  // 남는다 (뒤쪽 프로젝트 아이콘이 안 보이던 원인).
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInView = useInView(gridRef, { once: true, margin: '-50px' });
   
   // Helper to render newlines
   const renderTitle = (text: string) => {
@@ -133,7 +140,7 @@ export default function IntegrationsGrid({ dict, projects }: { dict?: any, proje
           {renderTitle(t.title)}
         </Title>
         
-        <Grid>
+        <Grid ref={gridRef}>
           {/* 웹·앱 구분 없이 모든 프로젝트를 보여준다. 같은 서비스가 web/app 두 줄로
               들어 있으므로 key 기준으로 한 번만, 아이콘이 있는 것만 그린다. */}
           {projects
@@ -156,16 +163,15 @@ export default function IntegrationsGrid({ dict, projects }: { dict?: any, proje
                   y: yStart,
                   filter: 'blur(10px)'
                 }}
-                whileInView={{ 
-                  opacity: 1, 
-                  scale: 1, 
-                  z: 0, 
-                  x: 0, 
+                animate={gridInView ? {
+                  opacity: 1,
+                  scale: 1,
+                  z: 0,
+                  x: 0,
                   y: 0,
                   filter: 'blur(0px)'
-                }}
-                viewport={{ margin: "-10%" }}
-                transition={{ 
+                } : undefined}
+                transition={{
                   duration: 0.8,
                   delay: index * 0.05,
                   type: "spring",
