@@ -63,5 +63,13 @@
     "portfolio": "포트폴리오 (PDF)",
     "language": "한국어",
     "copyright": "© {year} Gowoobro. All rights reserved."
+  },
+  "legal": {
+    "effective": "시행일",
+    "version": "버전 {version}",
+    "history": "이전 버전 보기",
+    "current": "현재",
+    "old_notice": "이 문서는 이전 버전입니다.",
+    "view_current": "현재 버전 보기"
   }
 }

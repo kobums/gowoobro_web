@@ -26,8 +26,9 @@ app/
 │   ├── admin/
 │   │   ├── layout.tsx       # Login gate for all /admin routes (backend POST /login → admin token)
 │   │   ├── answers/page.tsx # Admin Q&A management — list questions, write answers
-│   │   └── projects/        # Project CRUD admin pages
-│   └── app/[id]/page.tsx    # Individual app detail page
+│   │   └── projects/        # Project CRUD admin pages ([id]/legal = 약관 버전 관리)
+│   ├── app/[id]/page.tsx    # Individual app detail page
+│   └── app/[id]/[doc]/page.tsx  # 약관·개인정보 처리방침 (DB 의 legaldoc_tb 를 그린다, ?v= 로 이전 버전)
 ├── components/
 │   ├── ChatInterface.tsx    # Question submission form + hint toast
 │   ├── FAB.tsx              # Floating action button + IP-based Q&A history panel
@@ -40,7 +41,8 @@ app/
 │   ├── questions.ts
 │   ├── answers.ts
 │   ├── ipblock.ts
-│   └── projects.ts
+│   ├── projects.ts
+│   └── legaldocs.ts
 ├── types/models.ts          # Shared TypeScript interfaces
 ├── dictionaries/            # i18n strings
 │   ├── ko.json
@@ -50,6 +52,16 @@ app/
 ├── providers.tsx            # React Query provider
 └── registry.tsx             # Emotion SSR registry
 ```
+
+## 약관·개인정보 처리방침
+
+앱/웹을 새로 낼 때마다 약관 페이지를 만들어 배포하지 않는다. 관리자 화면(`/admin/projects/{id}/legal`)에서 마크다운으로 등록하면 `/{lang}/app/{id}/{type}` 이 바로 열린다 (`type` 은 `terms`, `privacy` 또는 직접 정한 값).
+
+- 이 주소는 스토어 등록 정보와 앱 안 링크에 박힌다. 경로 구조를 바꾸지 않는다.
+- 고치지 않고 쌓는다. 시행일이 지난 버전은 서버가 수정·삭제를 409 로 막는다. 바꾸려면 새 버전을 등록한다.
+- 요청한 언어의 문서가 없으면 한국어 문서가 나온다.
+- 본문은 `LegalDocBody`(react-markdown + GFM)가 그린다. 본문 속 HTML 은 실행되지 않는다.
+- 페이지는 앱 웹뷰에서 열리므로 사이트 Header/Footer 를 붙이지 않는다.
 
 ## Key Patterns
 
