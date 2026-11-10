@@ -63,5 +63,13 @@
     "portfolio": "Portfolio (PDF)",
     "language": "English",
     "copyright": "© {year} Gowoobro. All rights reserved."
+  },
+  "legal": {
+    "effective": "Effective",
+    "version": "Version {version}",
+    "history": "Previous versions",
+    "current": "current",
+    "old_notice": "You are viewing a previous version.",
+    "view_current": "View the current version"
   }
 }
