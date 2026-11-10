@@ -232,6 +232,9 @@ export default function ProjectsAdminPage() {
                 <Link href={`/admin/projects/${project.id}`}>
                   <ActionButton>Edit</ActionButton>
                 </Link>
+                <Link href={`/admin/projects/${project.id}/legal`}>
+                  <ActionButton>약관</ActionButton>
+                </Link>
                 <DeleteButton onClick={() => handleDelete(project.id)}>Delete</DeleteButton>
               </Td>
             </tr>
