@@ -34,6 +34,8 @@ const HeaderContainer = styled(motion.header)`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  /* 목록이 길어도 화면 밖으로 나가지 않게 (위 16px + 아래 16px 여백) */
+  max-height: calc(100dvh - 32px);
 
   @media (max-width: 768px) {
     width: 90%;
@@ -151,6 +153,15 @@ const CTAButton = styled(Link)`
   }
 `;
 
+// 목록 영역: 헤더 높이를 넘으면 이 안에서 스크롤하고, 끝에 닿아도 뒤 페이지로 넘기지 않는다
+const ScrollArea = styled.div`
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+`;
+
 // Container for content measurement
 const ContentWrapper = styled.div`
   width: 100%;
@@ -248,6 +259,43 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [contentRef, contentSize] = useElementSize();
+  const headerRef = useRef<HTMLElement>(null);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const update = () => setViewportHeight(window.visualViewport?.height ?? window.innerHeight);
+    update();
+    window.addEventListener('resize', update);
+    window.visualViewport?.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.visualViewport?.removeEventListener('resize', update);
+    };
+  }, []);
+
+  // 터치 기기에서 목록이 열려 있으면 뒤 페이지 스크롤을 막고, 바깥을 누르면 닫는다
+  useEffect(() => {
+    if (!activeTab || !window.matchMedia('(hover: none)').matches) return;
+
+    const html = document.documentElement;
+    const prevHtml = html.style.overflow;
+    const prevBody = document.body.style.overflow;
+    html.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    const handleOutside = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setActiveTab(null);
+      }
+    };
+    document.addEventListener('pointerdown', handleOutside);
+
+    return () => {
+      html.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+      document.removeEventListener('pointerdown', handleOutside);
+    };
+  }, [activeTab]);
 
   const apps = projects.filter(p => p.type === 'app');
   const webs = projects.filter(p => p.type === 'web');
@@ -282,7 +330,9 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
   // Header height logic: 52px (TopBar) + Measured Content Height
   // If no active tab, content height is effectively 0, but since we unmount children,
   // we rely on the measured size of the wrapper or force animating to 52.
-  const targetHeight = activeTab ? 52 + contentSize.height : 52;
+  const fullHeight = activeTab ? 52 + contentSize.height : 52;
+  // CSS max-height 와 같은 값으로 잘라야 닫힐 때 애니메이션이 늦게 시작하지 않는다
+  const targetHeight = viewportHeight ? Math.min(fullHeight, viewportHeight - 32) : fullHeight;
 
   // Fallback for dict if not provided (during transition)
   const t = dict || {
@@ -292,6 +342,7 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
 
   return (
     <HeaderContainer
+      ref={headerRef}
       initial={false}
       animate={{ height: targetHeight }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
@@ -342,6 +393,7 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
       </TopBar>
 
       {/* Measure content size even if hidden/animating */}
+      <ScrollArea>
       <div ref={contentRef}>
         <AnimatePresence mode="wait">
           {activeTab && (
@@ -388,6 +440,7 @@ export default function Header({ dict, projects }: { dict?: any, projects: Proje
           )}
         </AnimatePresence>
       </div>
+      </ScrollArea>
     </HeaderContainer>
   );
 }
