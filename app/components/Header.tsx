@@ -157,14 +157,17 @@ const CTAButton = styled(Link)`
 const ScrollArea = styled.div`
   flex: 1 1 auto;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 `;
 
 // Container for content measurement
 const ContentWrapper = styled.div`
   width: 100%;
+  box-sizing: border-box;
   padding: 0 1rem 1rem 1rem;
 `;
 
@@ -190,9 +193,12 @@ const CardLink = styled(Link)`
   transition: all 0.2s ease-in-out;
   background: transparent;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(1.02);
+  /* 터치 기기에서는 hover 가 눌린 채 남아 카드가 커진 상태로 굳으므로 마우스 기기에서만 */
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(1.02);
+    }
   }
 `;
 
